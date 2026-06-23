@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARYA EDITS — Cinematic Video Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --g:#B8973A;--gl:rgba(184,151,58,.15);--gd:rgba(184,151,58,.06);
+  --ink:#05050A;--ink2:#0B0B12;--w:#F0EDE6;--mu:#6E6B65;
+  --bd:rgba(184,151,58,.18);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--ink);color:var(--w);overflow-x:hidden;cursor:none}
+
+/* CURSOR */
+#cur{position:fixed;width:8px;height:8px;background:var(--g);border-radius:50%;pointer-events:none;z-index:9999;transition:transform .12s}
+#cur2{position:fixed;width:36px;height:36px;border:1px solid rgba(184,151,58,.5);border-radius:50%;pointer-events:none;z-index:9998}
+
+/* CANVAS */
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* NAV */
+nav{position:fixed;width:100%;top:0;z-index:1000;padding:24px 72px;display:flex;justify-content:space-between;align-items:center;transition:all .4s}
+nav.s{background:rgba(5,5,10,.88);backdrop-filter:blur(18px);padding:16px 72px;border-bottom:1px solid var(--bd)}
+.logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--g)}
+.nl{display:flex;gap:32px;align-items:center}
+.nl a{color:var(--mu);text-decoration:none;font-size:12px;letter-spacing:2.5px;text-transform:uppercase;transition:color .3s;cursor:none}
+.nl a:hover{color:var(--w)}
+.nc{background:var(--g);color:var(--ink);padding:11px 24px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:2px}
+.nc:hover{background:#d4af37;color:var(--ink) !important}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:0 72px;position:relative;z-index:1}
+.hero-inner{max-width:900px}
+.he{font-size:11px;letter-spacing:6px;text-transform:uppercase;color:var(--g);margin-bottom:28px;display:flex;align-items:center;gap:14px;opacity:0;animation:fu .8s .2s forwards}
+.he::before{content:'';width:28px;height:1px;background:var(--g)}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(4.5rem,9.5vw,10rem);font-weight:300;line-height:.95;letter-spacing:-2px;opacity:0;animation:fu .9s .4s forwards}
+.hero h1 span{font-style:italic;color:var(--g)}
+.hero h1 strong{font-weight:700;display:block}
+.hs{margin-top:32px;font-size:1rem;line-height:1.8;color:var(--mu);max-width:480px;font-weight:400;opacity:0;animation:fu .8s .65s forwards}
+.ha{margin-top:48px;display:flex;gap:16px;flex-wrap:wrap;opacity:0;animation:fu .8s .85s forwards}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:15px 32px;text-decoration:none;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;border-radius:3px;transition:transform .25s,box-shadow .25s;cursor:none}
+.bp{background:var(--g);color:var(--ink)}
+.bp:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(184,151,58,.3)}
+.bg{border:1px solid var(--bd);color:var(--w)}
+.bg:hover{border-color:var(--g);transform:translateY(-4px)}
+.hsc{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--mu);opacity:0;animation:fi 1s 1.4s forwards}
+.hsl{width:44px;height:1px;background:var(--g);overflow:hidden;position:relative}
+.hsl::after{content:'';position:absolute;inset:0;background:var(--w);transform:translateX(-100%);animation:sl 2s 1.8s infinite}
+.hbg{position:absolute;right:0;top:0;bottom:0;width:42%;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden}
+.hbg-text{font-family:'Cormorant Garamond',serif;font-size:clamp(10rem,18vw,22rem);font-weight:700;font-style:italic;color:rgba(184,151,58,.04);line-height:1;user-select:none;white-space:nowrap}
+
+/* MARQUEE */
+.mq{border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:18px 0;overflow:hidden;position:relative;z-index:1}
+.mq-track{display:flex;gap:0;animation:mq 22s linear infinite;width:max-content}
+.mq-item{padding:0 40px;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--mu);white-space:nowrap;display:flex;align-items:center;gap:16px}
+.mq-dot{width:4px;height:4px;background:var(--g);border-radius:50%;flex-shrink:0}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--bd);position:relative;z-index:1}
+.stat{padding:48px 40px;border-right:1px solid var(--bd);text-align:center}
+.stat:last-child{border-right:none}
+.sn{font-family:'Cormorant Garamond',serif;font-size:clamp(3.5rem,5.5vw,5.5rem);font-weight:300;line-height:1;color:var(--g)}
+.sl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--mu);margin-top:10px}
+
+/* SECTION */
+.sec{padding:120px 72px;max-width:1380px;margin:auto;position:relative;z-index:1}
+.slb{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--g);display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.slb::before{content:'';width:24px;height:1px;background:var(--g)}
+.st{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,5vw,5rem);font-weight:300;line-height:1.05;margin-bottom:72px}
+.st em{font-style:italic;color:var(--g)}
+
+/* SERVICES */
+.svc{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);border:1px solid var(--bd);border-radius:8px;overflow:hidden}
+.sc{background:var(--ink2);padding:56px 48px;position:relative;overflow:hidden;transition:background .3s}
+.sc:first-child{grid-column:span 2}
+.sc::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--g);transition:width .6s}
+.sc:hover{background:#0e0e18}
+.sc:hover::after{width:100%}
+.sci{font-size:2.8rem;margin-bottom:28px;opacity:.85}
+.sc h3{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;margin-bottom:14px}
+.sc p{color:var(--mu);line-height:1.8;font-size:.9rem;max-width:520px}
+.stag{display:inline-flex;margin-top:22px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--g);border:1px solid var(--bd);padding:5px 14px;border-radius:2px}
+
+/* PORTFOLIO */
+.pg{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.pi{position:relative;overflow:hidden;border-radius:8px;border:1px solid var(--bd);background:#08080f}
+.pi:nth-child(1){grid-column:span 2}
+.pv{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;transition:transform .7s cubic-bezier(.25,.46,.45,.94)}
+.pi:nth-child(1) .pv{aspect-ratio:21/9}
+.pi:hover .pv{transform:scale(1.05)}
+.po{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,10,.9) 0%,transparent 55%);display:flex;align-items:flex-end;padding:28px;opacity:0;transition:opacity .4s}
+.pi:hover .po{opacity:1}
+.pl{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600}
+.pt{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--g);margin-top:4px}
+
+/* PROCESS */
+.prs{display:grid;grid-template-columns:repeat(4,1fr);gap:48px}
+.pr{position:relative}
+.prn{font-family:'Cormorant Garamond',serif;font-size:6rem;font-weight:300;line-height:1;color:rgba(184,151,58,.07);position:absolute;top:-12px;left:-6px;transition:color .4s}
+.pr:hover .prn{color:rgba(184,151,58,.16)}
+.prc{padding-top:56px}
+.pri{font-size:1.7rem;margin-bottom:16px;display:block}
+.pr h3{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;margin-bottom:12px}
+.pr p{color:var(--mu);font-size:.88rem;line-height:1.75}
+
+/* PRICING */
+.pcg{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start}
+.pc{background:var(--ink2);border:1px solid var(--bd);border-radius:8px;padding:48px 36px;position:relative;transition:transform .3s,border-color .3s}
+.pc:hover{transform:translateY(-8px)}
+.pc.ft{border-color:var(--g);background:linear-gradient(145deg,#0d0d16,#090910)}
+.pc.ft::before{content:'MOST POPULAR';position:absolute;top:-1px;right:24px;background:var(--g);color:var(--ink);font-size:10px;font-weight:700;letter-spacing:2px;padding:5px 12px;border-radius:0 0 5px 5px}
+.pt2{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--mu);margin-bottom:16px}
+.pa{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3vw,3rem);font-weight:300;color:var(--g);line-height:1}
+.pn{color:var(--mu);font-size:.82rem;margin-top:6px;margin-bottom:32px}
+.pf{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:36px}
+.pf li{font-size:.88rem;color:var(--mu);display:flex;gap:10px;align-items:flex-start}
+.pf li::before{content:'→';color:var(--g);flex-shrink:0}
+
+/* TESTIMONIALS */
+.tt{overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.ts{display:flex;gap:20px;animation:mq2 35s linear infinite;width:max-content}
+.ts:hover{animation-play-state:paused}
+.tc{background:var(--ink2);border:1px solid var(--bd);border-radius:8px;padding:32px;width:330px;flex-shrink:0}
+.tst{color:var(--g);font-size:.85rem;letter-spacing:2px;margin-bottom:16px}
+.tx{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;line-height:1.65;margin-bottom:20px}
+.ta{display:flex;gap:12px;align-items:center}
+.tav{width:38px;height:38px;border-radius:50%;background:var(--gl);border:1px solid var(--g);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--g);flex-shrink:0}
+.tn{font-size:.9rem;font-weight:700}
+.tr{color:var(--mu);font-size:.75rem;margin-top:2px}
+
+/* CONTACT */
+.cl{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.ci h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4vw,3.8rem);font-weight:300;line-height:1.1;margin-bottom:20px}
+.ci p{color:var(--mu);line-height:1.8;margin-bottom:40px;font-size:.92rem}
+.ck{display:flex;flex-direction:column;gap:12px}
+.ca{display:flex;align-items:center;gap:16px;color:var(--w);text-decoration:none;padding:18px 22px;background:var(--ink2);border:1px solid var(--bd);border-radius:6px;transition:border-color .3s,transform .3s;cursor:none}
+.ca:hover{border-color:var(--g);transform:translateX(6px)}
+.cai{font-size:1.3rem;flex-shrink:0}
+.cad{flex:1}
+.cadl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--mu)}
+.cadv{font-size:.93rem;margin-top:2px}
+.carr{color:var(--g)}
+.cf{display:flex;flex-direction:column;gap:16px}
+.fg{display:flex;flex-direction:column;gap:6px}
+.fl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--mu)}
+.fi,.ft3{background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:5px;padding:13px 16px;color:var(--w);font-family:'Syne',sans-serif;font-size:.92rem;outline:none;transition:border-color .3s;cursor:none;width:100%}
+.fi:focus,.ft3:focus{border-color:var(--g)}
+.ft3{resize:vertical;min-height:120px}
+
+/* FOOTER */
+footer{border-top:1px solid var(--bd);padding:44px 72px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;position:relative;z-index:1}
+.fl2{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--g)}
+.fc{color:var(--mu);font-size:.8rem}
+.fls{display:flex;gap:24px}
+.fls a{color:var(--mu);text-decoration:none;font-size:.8rem;letter-spacing:1px;transition:color .3s;cursor:none}
+.fls a:hover{color:var(--g)}
+
+/* DIVIDER */
+.dv{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:.25;position:relative;z-index:1}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(36px);transition:opacity .7s,transform .7s}
+.rv.on{opacity:1;transform:translateY(0)}
+
+/* KEYFRAMES */
+@keyframes fu{to{opacity:1;transform:translateY(0)}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes sl{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes mq2{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* MOBILE */
+@media(max-width:960px){
+  nav,nav.s{padding:16px 24px}
+  .nl{gap:16px}
+  .hero,.sec,.stats,.mq{padding-left:24px;padding-right:24px}
+  .hero{padding-top:100px;text-align:center;align-items:center}
+  .hbg,.hsc{display:none}
+  .ha{justify-content:center}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat{border-right:1px solid var(--bd)}
+  .stat:nth-child(2),.stat:last-child{border-right:none}
+  .svc,.pg{grid-template-columns:1fr}
+  .sc:first-child,.pi:nth-child(1){grid-column:span 1}
+  .pi:nth-child(1) .pv{aspect-ratio:16/9}
+  .prs,.pcg{grid-template-columns:1fr}
+  .cl{grid-template-columns:1fr;gap:48px}
+  footer{flex-direction:column;text-align:center;padding:32px 24px}
+}
+@media(max-width:520px){
+  .nl .nc,.nl a:not(.nc){display:none}
+  .nl .nc{display:inline-flex}
+  .hero h1{font-size:3.8rem}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur2"></div>
+<canvas id="cv"></canvas>
+
+<nav id="nav">
+  <div class="logo">Arya Edits</div>
+  <div class="nl">
+    <a href="#services">Services</a>
+    <a href="#portfolio">Work</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#contact" class="btn nc">Get a Quote</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="he">Premium Cinematic Studio · Est. 2023</div>
+    <h1>Every Frame<br><span>Tells</span> a<br><strong>Story</strong></h1>
+    <p class="hs">Cinematic video editing for brands, creators, and businesses who demand excellence. From reels to brand films — crafted with purpose.</p>
+    <div class="ha">
+      <a href="#portfolio" class="btn bp">View Portfolio</a>
+      <a href="#contact" class="btn bg">Start a Project</a>
+    </div>
+  </div>
+  <div class="hbg"><div class="hbg-text">AE</div></div>
+  <div class="hsc"><div class="hsl"></div>Scroll to explore</div>
+</section>
+
+<!-- MARQUEE -->
+<div class="mq">
+  <div class="mq-track">
+    <div class="mq-item"><span class="mq-dot"></span>Cinematic Reels</div>
+    <div class="mq-item"><span class="mq-dot"></span>Brand Storytelling</div>
+    <div class="mq-item"><span class="mq-dot"></span>Colour Grading</div>
+    <div class="mq-item"><span class="mq-dot"></span>Motion Graphics</div>
+    <div class="mq-item"><span class="mq-dot"></span>Sound Design</div>
+    <div class="mq-item"><span class="mq-dot"></span>Animated Captions</div>
+    <div class="mq-item"><span class="mq-dot"></span>Event Highlights</div>
+    <div class="mq-item"><span class="mq-dot"></span>Social Content</div>
+    <div class="mq-item"><span class="mq-dot"></span>Cinematic Reels</div>
+    <div class="mq-item"><span class="mq-dot"></span>Brand Storytelling</div>
+    <div class="mq-item"><span class="mq-dot"></span>Colour Grading</div>
+    <div class="mq-item"><span class="mq-dot"></span>Motion Graphics</div>
+    <div class="mq-item"><span class="mq-dot"></span>Sound Design</div>
+    <div class="mq-item"><span class="mq-dot"></span>Animated Captions</div>
+    <div class="mq-item"><span class="mq-dot"></span>Event Highlights</div>
+    <div class="mq-item"><span class="mq-dot"></span>Social Content</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat rv"><div class="sn" data-c="150">0</div><div class="sl">Projects Delivered</div></div>
+  <div class="stat rv"><div class="sn" data-c="50">0</div><div class="sl">Happy Clients</div></div>
+  <div class="stat rv"><div class="sn" data-c="3">0</div><div class="sl">Years of Excellence</div></div>
+  <div class="stat rv"><div class="sn" data-c="98">0</div><div class="sl">Satisfaction Rate %</div></div>
+</div>
+
+<!-- SERVICES -->
+<section id="services" class="sec">
+  <div class="slb">What We Offer</div>
+  <h2 class="st rv">Crafted for <em>Impact</em></h2>
+  <div class="svc">
+    <div class="sc rv">
+      <div class="sci">🎬</div>
+      <h3>Premium Reel Editing</h3>
+      <p>High-energy short-form content engineered to stop the scroll. Every cut, transition, and beat sync is deliberate — built to grow your audience and convert viewers into loyal followers.</p>
+      <span class="stag">Reels · Instagram · Shorts</span>
+    </div>
+    <div class="sc rv">
+      <div class="sci">✍️</div>
+      <h3>Cinematic Captions</h3>
+      <p>Dynamic animated subtitle systems that amplify your message. Styled to match your brand and optimised for silent viewing across all platforms.</p>
+      <span class="stag">Subtitles · Typography · Animation</span>
+    </div>
+    <div class="sc rv">
+      <div class="sci">🏆</div>
+      <h3>Brand Storytelling</h3>
+      <p>Visual narratives that communicate value before a word is spoken. We translate your brand's identity into high-converting cinematic sequences that leave a lasting impression globally.</p>
+      <span class="stag">Brand Films · Promos · Ad Creatives</span>
+    </div>
+  </div>
+</section>
+
+<div class="dv"></div>
+
+<!-- PORTFOLIO -->
+<section id="portfolio" class="sec">
+  <div class="slb">Selected Work</div>
+  <h2 class="st rv">The <em>Portfolio</em></h2>
+  <div class="pg">
+    <div class="pi rv">
+      <video class="pv" controls muted loop autoplay playsinline>
+        <source src="C:\Users\aryaa\Videos\VAAGAI 2K26\0623.mp4" type="video/mp4">
+      </video>
+      <div class="po"><div><div class="pl">VAAGAI 2K26 — Event Highlight</div><div class="pt">Cinematic · Colour Grade · Sound</div></div></div>
+    </div>
+    <div class="pi rv">
+      <video class="pv" controls muted loop autoplay playsinline>
+        <source src="C:\Users\aryaa\Videos\VAAGAI 2K26\e-git.mp4" type="video/mp4">
+      </video>
+      <div class="po"><div><div class="pl">Expo Showcase Reel</div><div class="pt">Brand Film · Motion Graphics</div></div></div>
+    </div>
+    <div class="pi rv">
+      <video class="pv" controls muted loop autoplay playsinline>
+        <source src="C:\Users\aryaa\Videos\VAAGAI 2K26\173-git.mp4" type="video/mp4">
+      </video>
+      <div class="po"><div><div class="pl">173 Model Symposium</div><div class="pt">Event Film · Captions · Grading</div></div></div>
+    </div>
+    <div class="pi rv">
+      <video class="pv" controls muted loop autoplay playsinline>
+        <source src="C:\Users\aryaa\Videos\VAAGAI 2K26\0623(2).mp4" type="video/mp4">
+      </video>
+      <div class="po"><div><div class="pl">Talentia Final Cut</div><div class="pt">Promo · Storytelling · VFX</div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="dv"></div>
+
+<!-- PROCESS -->
+<section id="process" class="sec">
+  <div class="slb">How It Works</div>
+  <h2 class="st rv">From Brief to <em>Masterpiece</em></h2>
+  <div class="prs">
+    <div class="pr rv">
+      <div class="prn">01</div>
+      <div class="prc"><span class="pri">💬</span><h3>Discovery</h3><p>We align on your vision, goals, audience, and deadline. Every project starts with a personal consultation.</p></div>
+    </div>
+    <div class="pr rv">
+      <div class="prn">02</div>
+      <div class="prc"><span class="pri">🎯</span><h3>Direction</h3><p>A tailored creative strategy — style references, pacing, music, colour palette, and structure are all defined.</p></div>
+    </div>
+    <div class="pr rv">
+      <div class="prn">03</div>
+      <div class="prc"><span class="pri">⚡</span><h3>Production</h3><p>Precision editing with cinematic colour grading, audio mixing, and motion graphics. Every frame perfected.</p></div>
+    </div>
+    <div class="pr rv">
+      <div class="prn">04</div>
+      <div class="prc"><span class="pri">✅</span><h3>Delivery</h3><p>Final export optimised for every platform. Revisions included until you're completely satisfied.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="dv"></div>
+
+<!-- PRICING -->
+<section id="pricing" class="sec">
+  <div class="slb">Investment</div>
+  <h2 class="st rv">Transparent <em>Pricing</em></h2>
+  <div class="pcg">
+    <div class="pc rv">
+      <div class="pt2">Basic</div>
+      <div class="pa">₹450 – ₹600</div>
+      <div class="pn">Per reel / short-form cut</div>
+      <ul class="pf">
+        <li>1 Premium Reel Edit</li>
+        <li>Basic colour correction</li>
+        <li>Captions & subtitles</li>
+        <li>1 revision round</li>
+        <li>MP4 delivery</li>
+      </ul>
+      <a href="#contact" class="btn bg" style="width:100%;justify-content:center">Get Started</a>
+    </div>
+    <div class="pc ft rv">
+      <div class="pt2">Standard</div>
+      <div class="pa">₹650 – ₹800</div>
+      <div class="pn">Advanced edit with effects</div>
+      <ul class="pf">
+        <li>Advanced Reel + Effects</li>
+        <li>Cinematic colour grade</li>
+        <li>Animated captions</li>
+        <li>Sound design & sync</li>
+        <li>2 revision rounds</li>
+        <li>Multi-format export</li>
+      </ul>
+      <a href="#contact" class="btn bp" style="width:100%;justify-content:center">Get Started</a>
+    </div>
+    <div class="pc rv">
+      <div class="pt2">Premium</div>
+      <div class="pa">Custom</div>
+      <div class="pn">Video packages & campaigns</div>
+      <ul class="pf">
+        <li>Full video package</li>
+        <li>Brand identity integration</li>
+        <li>Motion graphics & VFX</li>
+        <li>Unlimited revisions</li>
+        <li>Priority turnaround</li>
+        <li>Dedicated support</li>
+      </ul>
+      <a href="#contact" class="btn bg" style="width:100%;justify-content:center">Enquire Now</a>
+    </div>
+  </div>
+</section>
+
+<div class="dv"></div>
+
+<!-- TESTIMONIALS -->
+<section class="sec" style="overflow:hidden;padding-bottom:60px">
+  <div class="slb">Client Voices</div>
+  <h2 class="st rv">What Clients <em>Say</em></h2>
+  <div class="tt">
+    <div class="ts">
+      <div class="tc"><div class="tst">★★★★★</div><p class="tx">"The reel Arya produced for our product launch exceeded every expectation. Our engagement tripled overnight."</p><div class="ta"><div class="tav">R</div><div><div class="tn">Rajan Mehta</div><div class="tr">Founder, BrandXcel</div></div></div></div>
+      <div class="tc"><div class="tst">★★★★★</div><p class="tx">"Cinematic quality at a fraction of agency cost. The turnaround was fast and the results were stunning."</p><div class="ta"><div class="tav">P</div><div><div class="tn">Priya Sundaram</div><div class="tr">Content Creator, 200K+</div></div></div></div>
+      <div class="tc"><div class="tst">★★★★★</div><p class="tx">"Every frame looked like it came from a feature film. Our event highlight reel blew everyone away."</p><div class="ta"><div class="tav">K</div><div><div class="tn">Karthik Venkat</div><div class="tr">Event Director</div></div></div></div>
+      <div class="tc"><div class="tst">★★★★★</div><p class="tx">"The attention to audio sync and colour grading is on another level. Clients always ask who edits our videos."</p><div class="ta"><div class="tav">S</div><div><div class="tn">Sneha R.</div><div class="tr">Marketing Head</div></div></div></div>
+      <div class="tc"><div class="tst">★★★★★</div><p class="tx">"Delivered in 24 hours, exactly on-brief, with revisions done in minutes. My permanent go-to studio."</p><div class="ta"><div class="tav">A</div><div><div class="tn">Arun Nair</div><div class="tr">Brand Consultant</div></div></div></div>
+      <div class="tc"><div class="tst">★★★★★</div><p class="tx">"The reel Arya produced for our product launch exceeded every expectation. Our engagement tripled overnight."</p><div class="ta"><div class="tav">R</div><div><div class="tn">Rajan Mehta</div><div class="tr">Founder, BrandXcel</div></div></div></div>
+      <div class="tc"><div class="tst">★★★★★</div><p class="tx">"Cinematic quality at a fraction of agency cost. The turnaround was fast and the results were stunning."</p><div class="ta"><div class="tav">P</div><div><div class="tn">Priya Sundaram</div><div class="tr">Content Creator, 200K+</div></div></div></div>
+      <div class="tc"><div class="tst">★★★★★</div><p class="tx">"Every frame looked like it came from a feature film. Our event highlight reel blew everyone away."</p><div class="ta"><div class="tav">K</div><div><div class="tn">Karthik Venkat</div><div class="tr">Event Director</div></div></div></div>
+      <div class="tc"><div class="tst">★★★★★</div><p class="tx">"The attention to audio sync and colour grading is on another level. Clients always ask who edits our videos."</p><div class="ta"><div class="tav">S</div><div><div class="tn">Sneha R.</div><div class="tr">Marketing Head</div></div></div></div>
+      <div class="tc"><div class="tst">★★★★★</div><p class="tx">"Delivered in 24 hours, exactly on-brief, with revisions done in minutes. My permanent go-to studio."</p><div class="ta"><div class="tav">A</div><div><div class="tn">Arun Nair</div><div class="tr">Brand Consultant</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="dv"></div>
+
+<!-- CONTACT -->
+<section id="contact" class="sec">
+  <div class="cl">
+    <div class="ci">
+      <div class="slb">Let's Talk</div>
+      <h2 class="rv">Ready to Create<br><em>Something Iconic?</em></h2>
+      <p class="rv">Whether you're a brand, creator, or business — let's discuss how we can tell your story in the most compelling way possible.</p>
+      <div class="ck">
+        <a href="https://wa.me/919843341960" class="ca rv">
+          <span class="cai">💬</span>
+          <div class="cad"><div class="cadl">WhatsApp</div><div class="cadv">+91 98433 41960</div></div>
+          <span class="carr">→</span>
+        </a>
+        <a href=https://www.instagram.com/arya_edits_21?igsh=MTJiYm52a2t1dGljMA== class="ca rv">
+          <span class="cai">📸</span>
+          <div class="cad"><div class="cadl">Instagram</div><div class="cadv">@arya_edits_21</div></div>
+          <span class="carr">→</span>
+        </a>
+        <a href="mailto:aryaedits@gmail.com" class="ca rv">
+          <span class="cai">✉️</span>
+          <div class="cad"><div class="cadl">Email</div><div class="cadv">aryaarya2413@gmail.com.com</div></div>
+          <span class="carr">→</span>
+        </a>
+      </div>
+    </div>
+    <div class="cf rv">
+      <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" placeholder="e.g. Rajan Mehta"></div>
+      <div class="fg"><label class="fl">Email or WhatsApp</label><input type="text" class="fi" placeholder="your@email.com or +91 XXXXX XXXXX"></div>
+      <div class="fg"><label class="fl">Project Type</label><input type="text" class="fi" placeholder="Reel, Brand Film, Event Highlight…"></div>
+      <div class="fg"><label class="fl">Tell Me About Your Vision</label><textarea class="ft3" placeholder="Describe your project, timeline, and goals…"></textarea></div>
+      <a href="https://wa.me/919843341960" class="btn bp" style="justify-content:center">Send via WhatsApp →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fl2">Arya Edits</div>
+  <div class="fc">© 2026 Arya Edits · Coimbatore, India</div>
+  <div class="fls">
+    <a href="#services">Services</a>
+    <a href="#portfolio">Work</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+// CURSOR
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function loop(){
+  cur.style.transform=`translate(${mx-4}px,${my-4}px)`;
+  rx+=(mx-rx-18)*.1;ry+=(my-ry-18)*.1;
+  cur2.style.transform=`translate(${rx}px,${ry}px)`;
+  requestAnimationFrame(loop);
+})();
+document.querySelectorAll('a,button,.sc,.pi').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.style.transform+=` scale(2.5)`);
+  el.addEventListener('mouseleave',()=>cur.style.transform=cur.style.transform.replace(` scale(2.5)`,''));
+});
+
+// NAV SCROLL
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('s',scrollY>60));
+
+// CANVAS BACKGROUND
+(function(){
+  const c=document.getElementById('cv'),ctx=c.getContext('2d');
+  let W,H;
+  const resize=()=>{W=c.width=innerWidth;H=c.height=innerHeight};
+  resize();window.addEventListener('resize',resize);
+  const G='rgba(184,151,58,';
+  const nodes=Array.from({length:55},()=>({
+    x:Math.random()*1920,y:Math.random()*1080,
+    vx:(Math.random()-.5)*.14,vy:(Math.random()-.5)*.14
+  }));
+  const pts=Array.from({length:60},()=>({
+    x:Math.random()*1920,y:Math.random()*1080,
+    vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,
+    r:Math.random()*1.4+.3,p:Math.random()*Math.PI*2,a:Math.random()*.7+.2
+  }));
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // top glow
+    const g=ctx.createRadialGradient(W*.5,-80,0,W*.5,0,W*.65);
+    g.addColorStop(0,G+'.065)');g.addColorStop(1,'transparent');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    // nodes
+    nodes.forEach(n=>{n.x=(n.x+n.vx+W)%W;n.y=(n.y+n.vy+H)%H});
+    for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
+      const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<180){ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.strokeStyle=G+(((.18*(1-d/180))).toFixed(3))+')';ctx.lineWidth=.4;ctx.stroke()}
+    }
+    nodes.forEach(n=>{ctx.beginPath();ctx.arc(n.x,n.y,1.4,0,Math.PI*2);ctx.fillStyle=G+'.3)';ctx.fill()});
+    // floating particles
+    pts.forEach(p=>{
+      p.x=(p.x+p.vx+W)%W;p.y=(p.y+p.vy+H)%H;p.p+=.018;
+      const a=(.25+.2*Math.sin(p.p))*p.a;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=G+a.toFixed(3)+')';ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// SCROLL REVEAL
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('on'),i*75);obs.unobserve(e.target)}});
+},{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+// COUNTER
+function count(el,target){
+  let n=0;const dur=1600,step=16,inc=target/(dur/step);
+  const t=setInterval(()=>{n=Math.min(n+inc,target);el.textContent=Math.floor(n)+(el.dataset.sfx||'');if(n>=target)clearInterval(t)},step);
+}
+const co=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){count(e.target,+e.target.dataset.c);co.unobserve(e.target)}});
+},{threshold:.5});
+document.querySelectorAll('[data-c]').forEach(el=>co.observe(el));
+
+// NAV HIGHLIGHT
+const secs=document.querySelectorAll('section[id]');
+const links=document.querySelectorAll('.nl a');
+window.addEventListener('scroll',()=>{
+  let cur2='';
+  secs.forEach(s=>{if(scrollY>=s.offsetTop-220)cur2=s.id});
+  links.forEach(a=>{a.style.color=a.getAttribute('href')==='#'+cur2?'var(--w)':''});
+});
+</script>
+</body>
+</html>
